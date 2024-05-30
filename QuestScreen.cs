@@ -23,12 +23,19 @@ namespace VisualQuestTree.UI
             // transform.parent.gameObject.SetActive(true);
 
             Plugin.Log.LogInfo($"OpenTaskScreen");
+
+            //TODO: Draw UI for quest tree
+
             //Show();
+            return;
         }
 
         internal void OnTaskScreenClose()
         {
             Plugin.Log.LogInfo($"CloseTaskScreen");
+
+            //TODO: Kill UI for quest tree
+
             //Hide();
         }
     }

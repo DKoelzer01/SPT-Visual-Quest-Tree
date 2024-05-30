@@ -19,10 +19,14 @@ namespace VisualQuestTree
             Instance = this;
             Logger.LogInfo($"Visual Quest Tree loaded.");
 
+            new CommonUIAwakePatch().Enable();
             new QuestScreenShowPatch().Enable();
             new QuestScreenClosePatch().Enable();
         }    
 
+        // TODO:    Pull quest data from SPT + Mods
+
+        
         internal void TryAttachToTasksScreen(TasksScreen tasksScreen) 
         {
             Logger.LogInfo($"TryAttach");
