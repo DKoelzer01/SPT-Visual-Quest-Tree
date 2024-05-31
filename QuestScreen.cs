@@ -27,9 +27,16 @@ namespace VisualQuestTree.UI
 
             Plugin.Log.LogInfo($"OpenTaskScreen");
 
-            //TODO: Draw UI for quest tree
-            
-            //Show();
+            /*TODO: Draw UI for quest tree
+                    Button for entering quest tree view;
+                        Persist between screen switches
+                        Button to return to normal view
+                    Disable Other task screen ui elements - Common UI -> Inventory Screen -> Tasks Panel -> Disable Everything
+                    Create prefab for quest box
+                        Instantiate prefabs for each quest
+                    Show all quests
+                    Filter quests by Trader.
+            */
             return;
         }
 
@@ -38,9 +45,9 @@ namespace VisualQuestTree.UI
             Plugin.Log.LogInfo($"CloseTaskScreen");
 
             transform.parent.gameObject.SetActive(false);
+
             //TODO: Kill UI for quest tree
 
-            //Hide();
         }
     }
 }
