@@ -12,11 +12,8 @@ import { IPmcData } from "@spt-aki/models/eft/common/IPmcData"
 import { IQuestConfig } from "@spt-aki/models/spt/config/IQuestConfig";
 import { ConfigTypes } from "@spt-aki/models/enums/ConfigTypes";
 import { ConfigServer } from "@spt-aki/servers/ConfigServer";
-import { Traders } from "@spt-aki/models/enums/Traders";
 import { TraderHelper } from "@spt-aki/helpers/TraderHelper";
 import { FenceService } from "@spt-aki/services/FenceService";
-import { ITemplateItem } from "@spt-aki/models/eft/common/tables/ITemplateItem";
-import { ILocaleBase } from "@spt-aki/models/spt/server/ILocaleBase";
 
 class Trader {
     protected name = "";
@@ -25,6 +22,16 @@ class Trader {
     constructor(name,id){
         this.name = name;
         this.id = id;
+    }
+}
+
+class QuestStatus {
+    protected id = "";
+    protected status = "";
+
+    constructor(id,status){
+        this.id = id;
+        this.status = status;
     }
 }
 
@@ -69,30 +76,6 @@ class Mod implements IPreAkiLoadMod
 									continue;
 								}
 								
-								const questStatus = questHelper.getQuestStatus(profile, quest._id);
-
-								/*
-								Locked = 0,
-								AvailableForStart = 1,
-								Started = 2,
-								AvailableForFinish = 3,
-								Success = 4,
-								Fail = 5,
-								FailRestartable = 6,
-								MarkedAsFailed = 7,
-								Expired = 8,
-								AvailableAfter = 9
-								
-								if (questStatus >= 3 && questStatus <= 8)
-								{
-									continue;
-								}
-								*/
-
-                                if (questHelper.getQuestFromDb(quest._id,profile).name.contains("event")) {
-                                    continue;
-                                }
-
 								quests.push(quest);
 							}
 							logger.info("Visual Quest Tree Got quests");
@@ -130,6 +113,47 @@ class Mod implements IPreAkiLoadMod
 
                         const traders: Trader[] = [Prapor,Therapist,Fence,Skier,Peacekeeper,Mechanic,Ragman,Jaeger,Lightkeeper,BTR,Caretaker,Artem,Scorpion,Lotus]; //Add additional traders here.
                         return JSON.stringify(traders);
+                    }
+                },
+                {
+                    url: "/VisualQuestTreeRoutes/questStatus",
+                    action: (url, info, sessionID, output) => 
+                    {
+                        const quests: QuestStatus[] = [];
+
+						const allQuests = questHelper.getQuestsFromDb();
+						const profile: IPmcData = profileHelper.getPmcProfile(sessionID);
+						
+						if(profile && profile.Quests)
+						{
+							for (const quest of allQuests)
+							{
+                                /*
+								Locked = 0,                 Red
+								AvailableForStart = 1,      Yellow
+								Started = 2,                Blue
+								AvailableForFinish = 3,     Green
+								Success = 4,                Gray
+								Fail = 5,                   Black
+								FailRestartable = 6,        Orange
+								MarkedAsFailed = 7,         Black
+								Expired = 8,                Black
+								AvailableAfter = 9          Yellow w/ Timer
+
+                                */
+
+                                if (profile.Info && this.questIsForOtherSide(profile.Info.Side, quest._id))
+                                {
+                                    continue;
+                                }
+
+                                const questStatus = questHelper.getQuestStatus(profile, quest._id);
+                                const tempQuestStatus = new QuestStatus(quest._id,questStatus)
+								quests.push(tempQuestStatus);
+							}
+
+                        return JSON.stringify(quests);
+                        }
                     }
                 },
             ],

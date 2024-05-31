@@ -23,8 +23,9 @@ namespace VisualQuestTree
         public string traderId;
         public (string, int) repRequirements = (null,0);
         public bool isTreeRoot = false;
+        public int status;
 
-        public Quest(string i, string n, List<string> p, List<string> c, int l, string t, (string,int) rep){
+        public Quest(string i, string n, List<string> p, List<string> c, int l, string t, (string,int) rep, int s){
             id = i;
             name = n;
             parents = p;
@@ -32,6 +33,7 @@ namespace VisualQuestTree
             LevelRequirement = l;
             traderId = t;
             repRequirements = rep;
+            status = s;
         }
 
         public void setRoot(bool b) {
@@ -97,6 +99,7 @@ namespace VisualQuestTree
                 List<string> parents = new List<string>();
                 List<string> children = new List<string>();
                 (string, int) repReq = (null,0);
+                int questStatus = 0;
                 int questLevelReq = 1;
 
                 var conditioncount = (JArray)item["conditions"]["AvailableForStart"];
@@ -124,7 +127,7 @@ namespace VisualQuestTree
                     }
                 }
                 
-                var tempQuest = new Quest(questID,questName,parents,children,questLevelReq,traderId,repReq);
+                var tempQuest = new Quest(questID,questName,parents,children,questLevelReq,traderId,repReq,questStatus);
                 MasterQuestList.Add(tempQuest);
             }
             
@@ -155,6 +158,8 @@ namespace VisualQuestTree
                 }
             }
 
+            GetQuestStatus();
+
             Log.LogInfo($"\n\n\n Trader Debugging");
             foreach(Trader t in Traders) {
                 Log.LogInfo($""+t.name+": ");
@@ -173,12 +178,26 @@ namespace VisualQuestTree
         }
 
 
-        internal string LookUpQuestNameByID(string id) 
+        public string LookUpQuestNameByID(string id) 
         {
             try {
                 return MasterQuestList.FirstOrDefault(x => x.id == id).name;
             } catch (Exception e) {
                 return "LOOKUPFAILED - " + id;
+            }
+        }
+
+        public void GetQuestStatus() 
+        {
+            Log.LogInfo("Get Quests Status");
+            JArray questStatusData = JArray.Parse(RequestHandler.GetJson("/VisualQuestTreeRoutes/questStatus"));
+            foreach(JObject item in questStatusData) 
+            {
+                string id = (string)item["id"];
+                int status = (int)item["status"];
+                Log.LogInfo("ID: " + id + " " + status);
+                MasterQuestList.FirstOrDefault(x => x.id == id).status = status;
+                
             }
         }
 
