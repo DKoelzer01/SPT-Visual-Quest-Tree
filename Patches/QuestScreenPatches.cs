@@ -19,7 +19,7 @@ namespace VisualQuestTree.Patches
             try
             {
                 Plugin.Log.LogInfo($"DEWEY Try Load Task Screen");
-                Plugin.Instance.Quests?.OnTaskScreenShow();
+                Plugin.Instance.QuestsScreen?.OnTaskScreenShow();
                 return false;
             }
             catch(Exception e)
@@ -46,7 +46,7 @@ namespace VisualQuestTree.Patches
             try
             {
                 Plugin.Log.LogInfo($"DEWEY Try Close Task Screen");
-                Plugin.Instance.Quests?.OnTaskScreenClose();
+                Plugin.Instance.QuestsScreen?.OnTaskScreenClose();
                 return false;
             }
             catch(Exception e)
