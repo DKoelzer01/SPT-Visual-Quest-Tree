@@ -24,7 +24,7 @@ namespace VisualQuestTree.Patches
         public static void Prefix(TasksScreen __instance)
         {
             Plugin.Log.LogInfo($"Task Screen Prefix");
-            if(Singleton<CommonUI>.Instance.transform.Find("Common UI/InventoryScreen/TasksScreen/QuestTreeButton").gameObject.name == null) {
+            if(__instance.transform.Find("QuestTreeButton") == null) {
                 var prefab = Singleton<CommonUI>.Instance.transform.Find("Common UI/InventoryScreen/BackButton").gameObject;
                 var go = UnityEngine.Object.Instantiate(prefab,Singleton<CommonUI>.Instance.transform.Find("Common UI/InventoryScreen/Tasks Panel/QuestTreeBlock").gameObject.transform.parent,false);
                 QuestTreeButton = go.GetComponent<DefaultUIButton>();
@@ -37,43 +37,6 @@ namespace VisualQuestTree.Patches
 
                 QuestTreeButton.OnClick.AddListener(() =>
                 {
-                    foreach(Transform child in __instance.transform) 
-                    {
-                        if(QuestTreeButton.HeaderText == "Quest Tree") {
-                            switch(child.name)
-                            {   //Disable all children except QuestTreeBlock, ignore QuestTreeButton as it is how you return from QuestTreeBlock
-                                case("QuestTreeBlock"):
-                                child.gameObject.SetActive(true);
-                                break;
-                                case("QuestTreeButton"):
-                                break;
-                                default:
-                                child.gameObject.SetActive(false);
-                                break;
-                            }
-                        } else {
-                            switch(child.name)
-                            {   //Enable all children except QuestTreeBlock, Ignore QuestTreeButton,NotesImage,ExitButton, and NoteWindow. Set the Quest Items / Notes toggle to Quest Items.
-                                case("QuestTreeBlock"):
-                                child.gameObject.SetActive(false);
-                                break;
-                                case("QuestItemsToggleGroup"):
-                                child.gameObject.transform.GetChild(0).GetComponent<UIAnimatedToggleSpawner>().Boolean_0 = false;
-                                child.gameObject.SetActive(true);
-                                break;
-                                case("QuestTreeButton"):
-                                case("NotesImage"):
-                                case("ExitButton"):
-                                case("NoteWindow"):
-                                break;
-                                default:
-                                child.gameObject.SetActive(true);
-                                break;
-                            }
-                        }
-                        
-                    }
-
                     if(QuestTreeButton.HeaderText == "Quest Tree") {
                         Plugin.Instance.QuestsScreen.OpenQuestTree();
                         QuestTreeButton.SetHeaderText("Task List", 24);
@@ -83,6 +46,10 @@ namespace VisualQuestTree.Patches
                         QuestTreeButton.SetHeaderText("Quest Tree", 24);
                     }
                 });
+            } else {
+                if(__instance.transform.Find("QuestTreeButton").gameObject.GetComponent<DefaultUIButton>().HeaderText == "Task List") {
+                    Plugin.Instance.QuestsScreen.CloseQuestTree();
+                }
             }
         }
 
