@@ -85,7 +85,7 @@ namespace VisualQuestTree
             foreach (JObject item in traderData)
             {
                 Trader trader = new Trader(item.GetValue("name").ToString(), item.GetValue("id").ToString());
-                Log.LogInfo("Trader: " + item.GetValue("name").ToString());
+                //Log.LogInfo("Trader: " + item.GetValue("name").ToString());
                 Traders.Add(trader);
             }
 
@@ -160,6 +160,7 @@ namespace VisualQuestTree
 
             GetQuestStatus();
 
+            /*
             Log.LogInfo($"\n\n\n Trader Debugging");
             foreach(Trader t in Traders) {
                 Log.LogInfo($""+t.name+": ");
@@ -175,6 +176,7 @@ namespace VisualQuestTree
                     }
                 }
             }
+            */
         }
 
 
@@ -195,7 +197,6 @@ namespace VisualQuestTree
             {
                 string id = (string)item["id"];
                 int status = (int)item["status"];
-                Log.LogInfo("ID: " + id + " " + status);
                 MasterQuestList.FirstOrDefault(x => x.id == id).status = status;
                 
             }

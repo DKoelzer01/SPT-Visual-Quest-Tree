@@ -1,9 +1,13 @@
 using System;
+using EFT;
 using EFT.UI;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using TMPro;
+using Comfort.Common;
 using VisualQuestTree.Utils;
+using VisualQuestTree.UI.Controls;
 
 namespace VisualQuestTree.UI
 {
@@ -11,21 +15,48 @@ namespace VisualQuestTree.UI
     {
         internal static QuestTreeScreen Create(GameObject parent)
         {
-            Plugin.Log.LogInfo("Create QuestTreeScreen");
-            var go = new GameObject("QuestTreeBlock", typeof(RectTransform));
-            go.layer = parent.layer;
-            go.transform.SetParent(parent.transform);
-            go.ResetRectTransform();
-            Plugin.Log.LogInfo("Finish QuestTreeScreen");
+            var go = UIUtils.CreateUIGameObject(parent,"QuestTreeBlock");
             return go.AddComponent<QuestTreeScreen>();
+        }
+
+        private void Awake() 
+        {
+            Plugin.Log.LogInfo("Create QuestTreeToggle");
+            // var QuestTreeToggle = UIUtils.CreateUIGameObject(this.gameObject,"QuestTreeToggle");
+            // var QuestTreeToggleText = TextBox.Create(QuestTreeToggle, 12);
+            // QuestTreeToggle.transform.SetParent(this.transform);
+            // QuestTreeToggleText.SetText("QUEST TREE");
+            // QuestTreeToggle.transform.localPosition = new Vector3(1280,1350,0);
+
+
+        }
+
+        /*  Toggle the following items:
+                WhiteBackground
+                OverallBackground
+                QuestItemsToggleGroup
+                NotesImage
+                QuestItemsPanel
+                NotesPart
+                TasksPanel
+                NoteWindow
+        */
+
+        internal void OpenQuestTree()
+        {
+            Plugin.Log.LogInfo("Open Quest Tree");
+        }
+
+        internal void CloseQuestTree() 
+        {
+            Plugin.Log.LogInfo("Close Quest Tree");
+            // do the opposite of open
         }
         internal void OnTaskScreenShow()
         {
-            // transform.parent.Find("MapBlock").gameObject.SetActive(false);
-            // transform.parent.Find("EmptyBlock").gameObject.SetActive(false);
-            transform.parent.gameObject.SetActive(true);
-
             Plugin.Log.LogInfo($"OpenTaskScreen");
+
+            transform.parent.gameObject.SetActive(true);
 
             /*TODO: Draw UI for quest tree
                     Button for entering quest tree view;
@@ -45,9 +76,6 @@ namespace VisualQuestTree.UI
             Plugin.Log.LogInfo($"CloseTaskScreen");
 
             transform.parent.gameObject.SetActive(false);
-
-            //TODO: Kill UI for quest tree
-
         }
     }
 }
